@@ -1,4 +1,4 @@
-export interface IPageForm {
+export interface IPage {
   title: string;
   content: string;
 }
@@ -8,5 +8,5 @@ export interface IPageName {
 }
 
 export interface IPagesApi {
-  [id: string]: IPageFormForm;
+  [id: string]: IPage;
 }

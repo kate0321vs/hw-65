@@ -48,7 +48,7 @@ const NavBar = () => {
             to='/'
             sx={{ flexGrow: 1, textDecoration: 'none' }}
           >
-            Quotes Central
+            Static Pages
           </Typography>
           {pagesList.map(page => (
             <Button key={page.id} color='inherit' component={NavLink} to={`/pages/${page.id}`}>{page.id}</Button>
