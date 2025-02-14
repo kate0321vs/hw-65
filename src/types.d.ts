@@ -3,6 +3,10 @@ export interface IPage {
   content: string;
 }
 
+export interface IPageMutation extends IPage {
+  page: string;
+}
+
 export interface IPageName {
   id: string;
 }
