@@ -5,9 +5,6 @@ import { Container } from '@mui/material';
 import Admin from './containers/Admin/Admin.tsx';
 
 const App = () => {
-  const onSubmitAction = () => {
-    console.log('Submit');
-  }
 
   return (
 
@@ -19,7 +16,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Page/>} />
           <Route path="pages/:page" element={<Page/>} />
-          <Route path="pages/admin" element={<Admin onSubmitAction={onSubmitAction}/>} />
+          <Route path="pages/admin" element={<Admin/>} />
         </Routes>
       </Container>
     </>

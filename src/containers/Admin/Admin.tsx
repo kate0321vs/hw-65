@@ -4,10 +4,9 @@ import { FormEvent, useCallback, useEffect, useState } from 'react';
 import { IPage, IPageMutation, IPageName } from '../../types';
 import axiosApi from '../../axiosApi.ts';
 import Loader from '../../components/UI/Loader/Loader.tsx';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
-interface Props {
-  onSubmitAction: (data: IPage) => void;
-}
 
 const initialState = {
   title: '',
@@ -16,10 +15,12 @@ const initialState = {
 }
 
 
-const Admin: React.FC<Props> = ({onSubmitAction}) => {
+const Admin = () => {
   const [form, setForm] = useState<IPageMutation>(initialState);
   const [loading, setLoading] = useState<boolean>(false);
-  const [pages, setPages] = useState<IPageName[]>([])
+  const [pages, setPages] = useState<IPageName[]>([]);
+  const [selectedPage, setSelectedPage] = useState<string>('');
+  const navigate = useNavigate();
 
   const fetchPageName = useCallback(async () => {
     try {
@@ -72,8 +73,23 @@ const Admin: React.FC<Props> = ({onSubmitAction}) => {
 
   const onSelectChange = (e: SelectChangeEvent<string>) => {
     const selectedPage = e.target.value;
+    setSelectedPage(selectedPage);
     setForm((prevForm) => ({ ...prevForm, page: selectedPage }));
     void fetchData(selectedPage);
+  };
+
+  const onSubmitAction = async (page: IPage) => {
+    try {
+      setLoading(true);
+      console.log(selectedPage);
+      await axiosApi.put(`pages/${selectedPage}.json`, page);
+      toast.success('Page was edited successfully!');
+      navigate(`/pages/${selectedPage}`);
+    } catch (error) {
+      alert(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -89,7 +105,6 @@ const Admin: React.FC<Props> = ({onSubmitAction}) => {
               name="page"
               value={form.page || ''}
               onChange={onSelectChange}
-              required
               fullWidth
               displayEmpty
             >
