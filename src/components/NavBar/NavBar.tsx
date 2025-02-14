@@ -1,8 +1,43 @@
 import { AppBar, Box, Button, Toolbar, Typography } from '@mui/material';
 import { NavLink } from 'react-router-dom';
+import { useCallback, useEffect, useState } from 'react';
+import axiosApi from '../../axiosApi.ts';
+import { IPageName, IPagesApi } from '../../types';
+import Loader from '../UI/Loader/Loader.tsx';
 
 const NavBar = () => {
+  const [pagesList, setPagesList] = useState<IPageName[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  const fetchData = useCallback(async () => {
+    setLoading(true);
+    try{
+    const response = await axiosApi<IPagesApi>('pages.json');
+    if (response.data) {
+      const pagesObject = response.data;
+      const pagesObjectKeys = Object.keys(pagesObject);
+      const quotesArr = pagesObjectKeys.map(key => {
+        return {
+          id: key
+        };
+      })
+      setPagesList(quotesArr);
+    } else {
+      setPagesList([]);
+    }
+  } catch (e) {
+    alert(e);
+  } finally {
+    setLoading(false);
+  }
+}, [])
+
+  useEffect(() => {
+    void fetchData();
+  }, [fetchData]);
+
   return (
+    loading ? <Loader /> :
     <Box sx={{mb: 5}}>
       <AppBar position="static">
         <Toolbar>
@@ -15,10 +50,10 @@ const NavBar = () => {
           >
             Quotes Central
           </Typography>
-          <Button color='inherit' component={NavLink} to='/pages/home'>Home</Button>
-          <Button color='inherit' component={NavLink} to='/pages/about'>About</Button>
-          <Button color='inherit' component={NavLink} to='/pages/contacts'>Contacts</Button>
-          <Button color='inherit' component={NavLink} to='/pages/services'>Services</Button>
+          {pagesList.map(page => (
+            <Button key={page.id} color='inherit' component={NavLink} to={`/pages/${page.id}`}>{page.id}</Button>
+          ))}
+
           <Button color='inherit' component={NavLink} to='/pages/admin'>Admin</Button>
         </Toolbar>
       </AppBar>
